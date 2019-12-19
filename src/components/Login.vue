@@ -30,8 +30,8 @@ export default {
   data() {
     return {
       loginForm: {
-        username: 'xs',
-        password: '123'
+        username: 'admin',
+        password: '123456'
       },
       loginFormRules: {
         // 用户名验证规则
@@ -56,8 +56,15 @@ export default {
       this.$refs.loginFormRef.resetFields()
     },
     login() {
-      this.$refs.loginFormRef.validate(valid => {
-        console.log(valid)
+      this.$refs.loginFormRef.validate(async valid => {
+        // console.log(valid)
+        // 验证不符合规则就return 不发起请求
+        if (!valid) return
+        const { data: res } = await this.$http.post('login', this.loginForm)
+        if (res.meta.status !== 200) return this.$message.error('登录失败!')
+        this.$message.success('登录成功')
+        window.sessionStorage.setItem('token', res.datatoken)
+        this.$router.push('/home')
       })
     }
   }
