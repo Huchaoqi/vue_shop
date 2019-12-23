@@ -19,7 +19,7 @@
         <!-- 展开列 -->
         <el-table-column type="expand">
           <template slot-scope="scope">
-            <el-row class="bdtop vcenter" v-for="item1 in scope.row.children" :key="item1.id">
+            <el-row :class="['bdtop',i1 === 0 ? 'bdbottom' : '','vcenter']" v-for="(item1, i1) in scope.row.children" :key="item1.id">
               <!-- 一级权限 -->
               <el-col :span="5">
                 <el-tag @close="removeRightById(scope.row, item1.id)" closable>{{ item1.authName }}</el-tag>
@@ -27,7 +27,7 @@
               </el-col>
               <!-- 二级权限和三级 -->
               <el-col :span="19">
-                <el-row class="bdbottom,bdtop,vcenter" v-for="item2 in item1.children" :key="item2.id">
+                <el-row :class="['bdtop',i2 === 0 ? 'bdbottom' : '','vcenter']" v-for="(item2,i2) in item1.children" :key="item2.id">
                   <el-col :span="6">
                     <el-tag type="success" @close="removeRightById(scope.row, item2.id)" closable>
                       {{ item2.authName }}
@@ -35,7 +35,7 @@
                     <i class="el-icon-caret-right"></i>
                   </el-col>
                   <el-col :span="18">
-                    <el-tag type="warning" @close="removeRightById(scope.row, item3.id)" closable class="[bdbottom,bdtop]" v-for="item3 in item2.children" :key="item3.id">
+                    <el-tag type="warning" @close="removeRightById(scope.row, item3.id)" closable :class="['bdtop',i3 === 0 ? 'bdbottom' : '','vcenter']"  v-for="(item3,i3) in item2.children" :key="item3.id">
                       {{ item3.authName }}
                     </el-tag>
                   </el-col>
@@ -80,8 +80,8 @@
     <el-dialog title="添加角色" :visible.sync="addDialogVisible" @close="addDialogClosed" width="40%">
       <!--内容主体 -->
       <el-form :model="addForm" :rules="addFormRules" ref="addFormRef" label-width="90px">
-        <el-form-item label="角色名称" prop="rolesName">
-          <el-input v-model="addForm.rolesName"></el-input>
+        <el-form-item label="角色名称" prop="roleName">
+          <el-input v-model="addForm.roleName"></el-input>
         </el-form-item>
         <el-form-item label="角色描述" prop="roleDesc">
           <el-input v-model="addForm.roleDesc"></el-input>
@@ -144,7 +144,7 @@ export default {
       roleId: '',
       //   添加表单的验证规则对象
       addFormRules: {
-        rolesname: [
+        rolename: [
           { required: true, message: '请输入角色名', trigger: 'blur' },
           { min: 3, max: 10, message: '角色名称长度在3-10个字符', trigger: 'blur' },
           { validator: checkrolesName, trigger: 'blur' }

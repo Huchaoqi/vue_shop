@@ -6,8 +6,12 @@ import './plugins/element.js'
 import './assets/font_icon3/iconfont.css'
 // 导入全局样式
 import './assets/css/global.css'
+// 导入面包屑导航
+import Bd from './components/bd.vue'
 // 导入axios请求
 import axios from 'axios'
+// d导入
+import TreeTable from 'vue-table-with-tree-grid'
 // 配置请求根路径
 axios.defaults.baseURL = 'http://127.0.0.1:8888/api/private/v1/'
 axios.interceptors.request.use(config => {
@@ -20,6 +24,8 @@ axios.interceptors.request.use(config => {
 Vue.prototype.$http = axios
 
 Vue.config.productionTip = false
+Vue.component('tree-table', TreeTable)
+Vue.component('bd', Bd)
 
 new Vue({
   router,
