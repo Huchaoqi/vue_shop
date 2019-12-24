@@ -271,7 +271,8 @@ export default {
         console.log(this.editForm.attr_id, this.cateId)
         const { data: res } = await this.$http.put(`categories/${this.cateId}/attributes/${this.editForm.attr_id}`, {
           attr_name: this.editForm.attr_name,
-          attr_sel: this.activeName
+          attr_sel: this.activeName,
+          attr_vals: this.editForm.attr_vals
         })
         console.log(res)
         if (res.meta.status !== 200) {
