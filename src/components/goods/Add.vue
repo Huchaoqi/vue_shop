@@ -55,7 +55,12 @@
               <el-button size="small" type="primary">点击上传</el-button>
             </el-upload>
           </el-tab-pane>
-          <el-tab-pane label="商品内容" name="4">商品内容</el-tab-pane>
+          <el-tab-pane label="商品内容" name="4">
+            <!--  富文本编辑器组件 -->
+            <quill-editor v-model="addForm.goods_introduce"></quill-editor>
+            <!-- 添加商品的按鈕 -->
+            <el-button type="primary" class="btnAdd" @click="add">添加商品</el-button>
+          </el-tab-pane>
         </el-tabs>
       </el-form>
     </el-card>
@@ -66,6 +71,8 @@
   </div>
 </template>
 <script>
+//  导入lodash
+import _ from 'lodash'
 export default {
   data() {
     return {
@@ -79,7 +86,10 @@ export default {
         // 商品所属的分类数组
         goods_cat: [],
         // 图片的数组
-        pics: []
+        pics: [],
+        // 商品详情描述
+        goods_introduce: '',
+        attrs: []
       },
       // 添加表单验证规则
       addFormRules: {
@@ -196,6 +206,48 @@ export default {
       // 2.将图片信息对象 push 到pics 数组中
       this.addForm.pics.push(picInfo)
       //  console.log(this.addForm)
+    },
+    //  添加商品
+    add() {
+      //   console.log(this.addForm)
+      this.$refs.addFormRef.validate(async valid => {
+        if (!valid) {
+          return this.$message.error('请填写必要的表单项')
+        }
+        // 执行添加业务的逻辑 这里需要goods_cat 作为字符串 上面级联选择需要的数组. 只能深拷贝一个新的goods_cat 字符串
+        // loadash 深拷贝  cloneDeep(obj)
+        // this.addForm.goods_cat.join(',')
+        // console.log(this.addForm)
+        const form = _.cloneDeep(this.addForm)
+        form.goods_cat = form.goods_cat.join(',')
+        // console.log(form)
+        // 处理动态参数
+        this.manyTableData.forEach(item => {
+          const newInfo = {
+            attr_id: item.attr_id,
+            attr_value: item.attr_vals.join('')
+          }
+          this.addForm.attrs.push(newInfo)
+        })
+        //  处理静态属性
+        this.onlyTableData.forEach(item => {
+          const newInfo = {
+            attr_id: item.attr_id,
+            attr_value: item.attr_vals
+          }
+          this.addForm.attrs.push(newInfo)
+        })
+        form.attrs = this.addForm.attrs
+        //  console.log(form)
+        // 发起请求添加商品
+        const { data: res } = await this.$http.post('goods', form)
+        console.log(res)
+        if (res.meta.status !== 201) {
+          return this.$message.error('添加商品失败,请完整填写表单')
+        }
+        this.$message.success('添加商品成功!')
+        this.$router.push('/goods')
+      })
     }
   },
   // 计算属性
@@ -221,5 +273,8 @@ export default {
 }
 .previewImg {
   width: 100%;
+}
+.btnAdd {
+  margin-top: 15px;
 }
 </style>

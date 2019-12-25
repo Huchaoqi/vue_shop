@@ -12,6 +12,11 @@ import Bd from './components/bd.vue'
 import axios from 'axios'
 // d导入
 import TreeTable from 'vue-table-with-tree-grid'
+// 导入富文本编辑器 以及样式
+import VueQuillEditor from 'vue-quill-editor'
+import 'quill/dist/quill.core.css'
+import 'quill/dist/quill.snow.css'
+import 'quill/dist/quill.bubble.css'
 // 配置请求根路径
 axios.defaults.baseURL = 'http://127.0.0.1:8888/api/private/v1/'
 axios.interceptors.request.use(config => {
@@ -25,7 +30,11 @@ Vue.prototype.$http = axios
 
 Vue.config.productionTip = false
 Vue.component('tree-table', TreeTable)
+// 面包屑导航
 Vue.component('bd', Bd)
+// 将富文本编辑器注册全局可用的组件
+Vue.use(VueQuillEditor)
+
 // 定义时间格式化的全局过滤器
 Vue.filter('dateFormat', function(originVal) {
   const dt = new Date(originVal)
